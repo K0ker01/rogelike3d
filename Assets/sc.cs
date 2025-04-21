@@ -1,0 +1,112 @@
+using UnityEngine;
+using UnityEngine.AI;
+
+[RequireComponent(typeof(NavMeshAgent), typeof(Animator))]
+public class EnemyAI : MonoBehaviour
+{
+    [Header("Target Settings")]
+    public Transform target; // Игрок
+    public float detectionRange = 10f;
+    public float attackRange = 2f;
+
+    private NavMeshAgent agent;
+    private Animator animator;
+    private bool isAttacking = false;
+
+    private void Awake()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
+
+        // Настройки агента по умолчанию
+        agent.stoppingDistance = attackRange - 0.1f;
+        agent.updateRotation = true;
+        agent.updatePosition = true;
+    }
+
+    private void Update()
+    {
+        if (target == null || !agent.isOnNavMesh) return;
+
+        float distance = Vector3.Distance(transform.position, target.position);
+
+        if (distance <= attackRange)
+        {
+            // Враг атакует
+            if (!isAttacking)
+            {
+                StartAttack();
+            }
+            // Повернуть к цели
+            RotateTowardsTarget();
+        }
+        else if (distance <= detectionRange)
+        {
+            // Враг преследует игрока
+            if (!isAttacking)
+            {
+                agent.SetDestination(target.position);
+                animator.SetBool("Moving", true);
+                animator.SetFloat("Animation Speed", agent.velocity.magnitude);
+            }
+        }
+        else
+        {
+            // Игрок слишком далеко
+            StopMovement();
+        }
+
+    }
+
+    private void StartAttack()
+    {
+        isAttacking = true;
+        agent.ResetPath();
+
+        animator.SetBool("Moving", false);
+        animator.SetInteger("Trigger Number", 2); // Триггер атаки
+        animator.SetTrigger("Trigger");
+    }
+
+    private void StopMovement()
+    {
+        agent.ResetPath();
+        animator.SetBool("Moving", false);
+        animator.SetFloat("Animation Speed", 0f);
+    }
+
+    private void RotateTowardsTarget()
+    {
+        Vector3 direction = (target.position - transform.position).normalized;
+        direction.y = 0;
+        if (direction != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+        }
+    }
+    // Вызывается через Animation Event
+    public void DealDamage()
+    {
+        if (target.TryGetComponent<HealthSystem>(out var health))
+        {
+            health.TakeDamage(50); // Урон врага
+        }
+    }
+
+    // Этот метод вызывается через Animation Event в конце анимации атаки
+    public void EndAttack()
+    {
+        isAttacking = false;
+    }
+
+    public void FootR()
+    {
+        Debug.Log("Правая нога на месте.");
+    }
+
+    public void FootL()
+    {
+        Debug.Log("Левая нога на месте.");
+    }
+}
