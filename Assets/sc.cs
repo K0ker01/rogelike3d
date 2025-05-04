@@ -90,7 +90,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (target.TryGetComponent<HealthSystem>(out var health))
         {
-            health.TakeDamage(50); // Урон врага
+            health.TakeDamage(15); // Урон врага
         }
     }
 
@@ -102,11 +102,11 @@ public class EnemyAI : MonoBehaviour
 
     public void FootR()
     {
-        Debug.Log("Правая нога на месте.");
+       /* Debug.Log("");*/
     }
 
     public void FootL()
     {
-        Debug.Log("Левая нога на месте.");
+     /*   Debug.Log("");*/
     }
 }

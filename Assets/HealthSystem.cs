@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 
 public class HealthSystem : MonoBehaviour
@@ -6,44 +7,51 @@ public class HealthSystem : MonoBehaviour
     [Header("Health Settings")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private float invincibilityTime = 0.5f;
+    [SerializeField] private GameObject deathEffect;
+
+    public int CurrentHealth { get; private set; }
     public int MaxHealth => maxHealth;
-    private int currentHealth;
+
+    // Все события для гибкости
+    public event Action<int> OnHealthChanged; // Основное событие для UI
+    public event Action<DamageInfo> OnDamageTaken; // Для дополнительных эффектов
+    public event Action<HealthSystem> OnDeath;
+    public event Action<int> OnHealed;
+
     private bool isInvincible;
     private float lastDamageTime;
 
-    // События для UI и эффектов
-    public event System.Action<int> OnHealthChanged;
-    public event System.Action OnDeath;
+    public struct DamageInfo
+    {
+        public int damageAmount;
+        public GameObject damageSource;
+        public Vector3 hitPoint;
+    }
 
     private void Awake()
     {
-        currentHealth = maxHealth;
+        CurrentHealth = maxHealth;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, GameObject damageSource = null)
     {
-        if (isInvincible || currentHealth <= 0) return;
-
-        // Проверка неуязвимости после получения урона
+        if (isInvincible || CurrentHealth <= 0) return;
         if (Time.time < lastDamageTime + invincibilityTime) return;
 
-        currentHealth -= damage;
+        CurrentHealth -= damage;
         lastDamageTime = Time.time;
+        CurrentHealth = Mathf.Clamp(CurrentHealth, 0, maxHealth);
 
-        // Ограничение здоровья
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-
-        // Оповещение подписчиков
-        OnHealthChanged?.Invoke(currentHealth);
-
-        if (currentHealth <= 0)
+        // Вызываем оба события
+        OnHealthChanged?.Invoke(CurrentHealth);
+        OnDamageTaken?.Invoke(new DamageInfo
         {
-            Die();
-        }
-        else
-        {
-            StartCoroutine(InvincibilityFrame());
-        }
+            damageAmount = damage,
+            damageSource = damageSource,
+            hitPoint = transform.position
+        });
+
+        if (CurrentHealth <= 0) Die();
     }
 
     private IEnumerator InvincibilityFrame()
@@ -55,26 +63,22 @@ public class HealthSystem : MonoBehaviour
 
     private void Die()
     {
-        OnDeath?.Invoke();
+        OnDeath?.Invoke(this);
 
-        // Отключаем компоненты при смерти
-        if (TryGetComponent<Collider>(out var col)) col.enabled = false;
+        var colliders = GetComponentsInChildren<Collider>();
+        foreach (var col in colliders) col.enabled = false;
+
         if (TryGetComponent<Rigidbody>(out var rb)) rb.isKinematic = true;
-
-        // Для врагов
         if (TryGetComponent<EnemyAI>(out var enemy)) enemy.enabled = false;
-
-        // Для игрока
         if (TryGetComponent<PlayerController>(out var player)) player.enabled = false;
 
-        // Уничтожаем объект через 3 секунды (можно заменить на анимацию смерти)
-        Destroy(gameObject, 3f);
+        Destroy(gameObject, 0f);
     }
 
-    // Для восстановления здоровья
     public void Heal(int amount)
     {
-        currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
-        OnHealthChanged?.Invoke(currentHealth);
+        CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, maxHealth);
+        OnHealthChanged?.Invoke(CurrentHealth);
+        OnHealed?.Invoke(amount);
     }
 }

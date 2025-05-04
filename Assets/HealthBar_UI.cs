@@ -1,35 +1,51 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class HealthBar_UI : MonoBehaviour
 {
-    [SerializeField] private Slider slider;
+    [Header("References")]
     [SerializeField] private HealthSystem healthSystem;
+    [SerializeField] private Image healthBarFill;
+    [SerializeField] private TextMeshProUGUI healthText;
 
-    private void Awake()
+    private void Start()
     {
-        // Добавляем проверку на null
-        if (healthSystem != null)
+        // Автопоиск HealthSystem если не назначен
+        if (healthSystem == null)
+            healthSystem = GetComponentInParent<HealthSystem>();
+
+        if (healthSystem == null)
         {
-            healthSystem.OnHealthChanged += UpdateHealthBar;
-
-            // Инициализируем полосу при старте
-            slider.maxValue = healthSystem.MaxHealth;
-            slider.value = healthSystem.MaxHealth;
+            Debug.LogError("HealthSystem reference missing!", this);
+            return;
         }
-    }
 
-    private void UpdateHealthBar(int currentHealth)
-    {
-        slider.value = currentHealth;
+        // Подписываемся на изменение здоровья
+        healthSystem.OnHealthChanged += UpdateHealthBar;
+
+        // Инициализируем с текущими значениями
+        UpdateHealthBar(healthSystem.CurrentHealth);
     }
 
     private void OnDestroy()
     {
-        // Важно отписаться от события при уничтожении объекта
         if (healthSystem != null)
-        {
             healthSystem.OnHealthChanged -= UpdateHealthBar;
-        }
+    }
+
+    private void UpdateHealthBar(int currentHealth)
+    {
+        float fillAmount = (float)currentHealth / healthSystem.MaxHealth;
+        healthBarFill.fillAmount = fillAmount;
+
+        if (healthText != null)
+            healthText.text = $"{currentHealth}/{healthSystem.MaxHealth}";
+
+        // Дополнительно: визуальный эффект при низком здоровье
+        if (fillAmount < 0.3f)
+            healthBarFill.color = Color.red;
+        else
+            healthBarFill.color = Color.green;
     }
 }
