@@ -48,13 +48,13 @@ public class PlayerInputController : MonoBehaviour
         mouseInput.x = rightStickInput.x != 0 ? rightStickInput.x * RightStickMultiplier.x : mouseInput.x;
         mouseInput.y = rightStickInput.y != 0 ? rightStickInput.y * RightStickMultiplier.y : mouseInput.y;
 
-        bool jumpInput = Input.GetButtonDown("Jump");
+        bool rollingInput = Input.GetButtonDown("rolling over");
 
         Current = new PlayerInput()
         {
             MoveInput = moveInput,
             MouseInput = mouseInput,
-            JumpInput = jumpInput
+            RollInput = rollingInput
         };
     }
 
@@ -77,5 +77,5 @@ public struct PlayerInput
 {
     public Vector3 MoveInput;
     public Vector2 MouseInput;
-    public bool JumpInput;
+    public bool RollInput;
 }

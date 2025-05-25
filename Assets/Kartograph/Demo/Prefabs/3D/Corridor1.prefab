@@ -427,8 +427,6 @@ MonoBehaviour:
   - room
   - spawn
   - treasure
-  exits: {fileID: 3816815562009239804}
-  bounds: {fileID: 226088168344294996}
   deadEndChance: 10
 --- !u!1 &9036375384262039557
 GameObject:
