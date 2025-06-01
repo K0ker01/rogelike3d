@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace WarriorAnimsFREE
+namespace WarriorAnim
 {
 	public class IKHands:MonoBehaviour
 	{

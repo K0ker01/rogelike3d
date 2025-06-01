@@ -1,4 +1,4 @@
-﻿namespace WarriorAnimsFREE
+﻿namespace WarriorAnim
 {
 	/// <summary>
 	/// The type of Warrior.  Determines which animations can play, and the 

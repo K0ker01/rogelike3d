@@ -452,7 +452,7 @@ Transform:
   m_GameObject: {fileID: 288942090}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 137.5, y: 0, z: -55.63}
+  m_LocalPosition: {x: -42.8, y: 0, z: 168.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1000,17 +1000,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55519974a5ef6a847b4a64799bd84996, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TLCorner: {x: 0, y: 0}
-  BLCorner: {x: 0, y: 0}
-  TRCorner: {x: 0, y: 0}
-  BRCorner: {x: 0, y: 0}
-  connectedRooms: []
-  savedConnectedRooms: []
-  corners: []
-  midPoints: []
-  closestRooms: []
-  isPlayerInside: 0
-  maxAmountOfConnections: 0
 --- !u!4 &1376380308
 Transform:
   m_ObjectHideFlags: 1
@@ -1055,17 +1044,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55519974a5ef6a847b4a64799bd84996, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TLCorner: {x: 0, y: 0}
-  BLCorner: {x: 0, y: 0}
-  TRCorner: {x: 0, y: 0}
-  BRCorner: {x: 0, y: 0}
-  connectedRooms: []
-  savedConnectedRooms: []
-  corners: []
-  midPoints: []
-  closestRooms: []
-  isPlayerInside: 0
-  maxAmountOfConnections: 0
 --- !u!4 &1499873325
 Transform:
   m_ObjectHideFlags: 1
@@ -1381,17 +1359,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55519974a5ef6a847b4a64799bd84996, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TLCorner: {x: 0, y: 0}
-  BLCorner: {x: 0, y: 0}
-  TRCorner: {x: 0, y: 0}
-  BRCorner: {x: 0, y: 0}
-  connectedRooms: []
-  savedConnectedRooms: []
-  corners: []
-  midPoints: []
-  closestRooms: []
-  isPlayerInside: 0
-  maxAmountOfConnections: 0
 --- !u!4 &1942898896
 Transform:
   m_ObjectHideFlags: 1

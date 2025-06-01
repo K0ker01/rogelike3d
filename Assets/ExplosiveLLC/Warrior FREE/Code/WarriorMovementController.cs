@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace WarriorAnimsFREE
+namespace WarriorAnim
 {
     public class WarriorMovementController : SuperStateMachine
     {
@@ -19,7 +19,7 @@ namespace WarriorAnimsFREE
         private void Start()
         {
             warriorController = GetComponent<WarriorController>();
-            // Set currentState to idle on startup.
+         
             currentState = WarriorState.Idle;
         }
 
@@ -31,10 +31,8 @@ namespace WarriorAnimsFREE
 
         protected override void LateGlobalSuperUpdate()
         {
-            // Move the player by our velocity every frame.
-            transform.position += currentVelocity * warriorController.superCharacterController.deltaTime;
+           transform.position += currentVelocity * warriorController.superCharacterController.deltaTime;
 
-            // If alive and is moving, set animator.
             if (warriorController.canMove)
             {
                 if (currentVelocity.magnitude > 0 && warriorController.HasMoveInput())
@@ -53,7 +51,6 @@ namespace WarriorAnimsFREE
 
             RotateTowardsMovementDir();
 
-            // Update animator with local movement values.
             warriorController.SetAnimatorFloat("Velocity", transform.InverseTransformDirection(currentVelocity).z);
         }
 
@@ -70,13 +67,11 @@ namespace WarriorAnimsFREE
 
         private void Idle_SuperUpdate()
         {
-            // Move if there is input.
             if (warriorController.HasMoveInput() && warriorController.canMove)
             {
                 currentState = WarriorState.Move;
                 return;
             }
-            // Apply friction to slow to a halt.
             currentVelocity = Vector3.MoveTowards(currentVelocity, Vector3.zero, groundFriction * warriorController.superCharacterController.deltaTime);
         }
 
@@ -86,7 +81,6 @@ namespace WarriorAnimsFREE
 
         private void Move_SuperUpdate()
         {
-            // Set speed determined by movement type.
             if (warriorController.HasMoveInput() && warriorController.canMove)
             {
                 currentVelocity = Vector3.MoveTowards(currentVelocity, warriorController.moveInput * runSpeed, movementAcceleration * warriorController.superCharacterController.deltaTime);
@@ -99,9 +93,6 @@ namespace WarriorAnimsFREE
 
         #endregion
 
-        /// <summary>
-        /// Rotate towards the direction the Warrior is moving.
-        /// </summary>
         private void RotateTowardsMovementDir()
         {
             if (warriorController.moveInput != Vector3.zero)

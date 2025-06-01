@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace WarriorAnimsFREE
+namespace WarriorAnim
 {
     public class WarriorCharacterAnimatorEvents:MonoBehaviour
     {

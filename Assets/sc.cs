@@ -18,7 +18,6 @@ public class EnemyAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
 
-        // Настройки агента по умолчанию
         agent.stoppingDistance = attackRange - 0.1f;
         agent.updateRotation = true;
         agent.updatePosition = true;
@@ -32,17 +31,14 @@ public class EnemyAI : MonoBehaviour
 
         if (distance <= attackRange)
         {
-            // Враг атакует
             if (!isAttacking)
             {
                 StartAttack();
             }
-            // Повернуть к цели
             RotateTowardsTarget();
         }
         else if (distance <= detectionRange)
         {
-            // Враг преследует игрока
             if (!isAttacking)
             {
                 agent.SetDestination(target.position);
@@ -52,7 +48,6 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            // Игрок слишком далеко
             StopMovement();
         }
 
@@ -64,7 +59,7 @@ public class EnemyAI : MonoBehaviour
         agent.ResetPath();
 
         animator.SetBool("Moving", false);
-        animator.SetInteger("Trigger Number", 2); // Триггер атаки
+        animator.SetInteger("Trigger Number", 2); 
         animator.SetTrigger("Trigger");
     }
 
@@ -85,16 +80,14 @@ public class EnemyAI : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
         }
     }
-    // Вызывается через Animation Event
     public void DealDamage()
     {
         if (target.TryGetComponent<HealthSystem>(out var health))
         {
-            health.TakeDamage(15); // Урон врага
+            health.TakeDamage(15); 
         }
     }
 
-    // Этот метод вызывается через Animation Event в конце анимации атаки
     public void EndAttack()
     {
         isAttacking = false;

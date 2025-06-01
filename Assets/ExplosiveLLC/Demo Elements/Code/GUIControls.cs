@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace WarriorAnimsFREE
+namespace WarriorAnim
 {
     public class GUIControls : MonoBehaviour
     {

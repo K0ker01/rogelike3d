@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace WarriorAnimsFREE
+namespace WarriorAnim
 {
 	/// <summary>
 	/// Placeholder script.  Extract the actual script from the "InputSystem Support - Requires InputSystem Package".
