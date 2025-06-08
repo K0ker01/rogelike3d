@@ -52,8 +52,10 @@ public class ModularLevelGenerator : MonoBehaviour
 
     void ProcessSection(SectionInstance section, int branchOrder)
     {
-        if (branchOrder >= maxBranchLength) return;
-        if (spawnedSections.Count >= maxLevelSize) return;
+        if (branchOrder >= maxBranchLength)
+        {
+            return;
+        }
 
         foreach (var exit in section.exits)
         {
@@ -63,7 +65,9 @@ public class ModularLevelGenerator : MonoBehaviour
                 continue;
             }
 
-            var nextSection = GetNextSection(section.prefab.createsTags, exit.customTags);
+            bool isLastInBranch = branchOrder + 1 >= maxBranchLength;
+
+            var nextSection = GetNextSection(section.prefab.createsTags, exit.customTags, isLastInBranch);
             if (nextSection == null) continue;
 
             GameObject newRoomGO = Instantiate(nextSection.prefab);
@@ -71,13 +75,12 @@ public class ModularLevelGenerator : MonoBehaviour
             Transform entrancePoint = newRoomGO.GetComponent<SectionMeta>().entrancePoint;
             Transform exitPoint = exit.transform;
 
-            Quaternion deltaRotation = exitPoint.rotation * Quaternion.Inverse(entrancePoint.rotation);
-            newRoomGO.transform.rotation = deltaRotation;
+            Quaternion targetRotation = exitPoint.rotation * Quaternion.Inverse(entrancePoint.rotation);
+            newRoomGO.transform.rotation = targetRotation;
 
-            Vector3 rotatedOffset = deltaRotation * (entrancePoint.position - newRoomGO.transform.position);
-            Vector3 positionOffset = exitPoint.position - (newRoomGO.transform.position + rotatedOffset);
-            newRoomGO.transform.position += positionOffset;
-
+            Vector3 entranceWorldPos = entrancePoint.position;
+            Vector3 roomOffset = newRoomGO.transform.position - entranceWorldPos;
+            newRoomGO.transform.position = exitPoint.position + roomOffset;
 
             var sectionInstance = new SectionInstance
             {
@@ -94,24 +97,25 @@ public class ModularLevelGenerator : MonoBehaviour
             spawnedSections.Add(sectionInstance);
             ProcessSection(sectionInstance, branchOrder + 1);
         }
-
-        Debug.Log("Processing section: " + section.instance.name + ", exits: " + section.exits.Count);
     }
 
 
-    SectionPrefab GetNextSection(List<string> createsTags, List<string> exitTags)
+
+    SectionPrefab GetNextSection(List<string> createsTags, List<string> exitTags, bool mustBeRoom = false)
     {
         var effectiveTags = exitTags != null && exitTags.Count > 0 ? exitTags : createsTags;
 
         var possibleSections = sectionPrefabs
             .Where(s => s.tags.Intersect(effectiveTags).Any())
             .Where(s => CheckRules(s.tags))
+            .Where(s => !mustBeRoom || s.isRoom) // если это конец ветки — берем только комнаты
             .ToList();
 
         if (possibleSections.Count == 0) return null;
 
         return possibleSections[random.Next(possibleSections.Count)];
     }
+
 
     bool CheckRules(List<string> tags)
     {
@@ -199,7 +203,7 @@ public class ModularLevelGenerator : MonoBehaviour
         public List<string> tags = new List<string>();
         public List<string> createsTags = new List<string>();
         [Range(0, 100)] public int deadEndChance = 10;
-
+        public bool isRoom = false;
 
     }
 
