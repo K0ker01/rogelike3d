@@ -6670,6 +6670,7 @@ GameObject:
   - component: {fileID: 3683935480640169063}
   - component: {fileID: 700771875113247173}
   - component: {fileID: 6796536006333234412}
+  - component: {fileID: 643004251920238168}
   m_Layer: 0
   m_Name: Floor_Flat
   m_TagString: Untagged
@@ -6773,6 +6774,27 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 0}
   m_BuildHeightMesh: 0
+--- !u!65 &643004251920238168
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357720561500555281}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.8377266, y: 0.2524622, z: 4.8377295}
+  m_Center: {x: -0.00000023841858, y: 0.12623087, z: -0.00000035762787}
 --- !u!1 &1538348189159568656
 GameObject:
   m_ObjectHideFlags: 0
@@ -29155,8 +29177,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4.9064894, y: 1.262155, z: 0.91017824}
-  m_Center: {x: -0.026769161, y: 4.006386, z: -0.0000009834766}
+  m_Size: {x: 4.9064894, y: 4.597216, z: 0.91017824}
+  m_Center: {x: -0.026769089, y: 2.3388534, z: -0.0000009628443}
 --- !u!208 &4631703236020839001
 NavMeshObstacle:
   m_ObjectHideFlags: 0
