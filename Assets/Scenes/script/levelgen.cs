@@ -23,6 +23,11 @@ public class ModularLevelGenerator : MonoBehaviour
     private List<SectionInstance> spawnedSections = new List<SectionInstance>();
     private System.Random random;
 
+    [Header("Enemies")]
+    public List<GameObject> enemyPrefabs; // список префабов врагов
+    [Range(0, 100)] public int enemySpawnChance = 100; // шанс появления врагов
+    public Vector2Int enemiesPerRoom = new Vector2Int(1, 3); // диапазон количества врагов
+
 
     void Start()
     {
@@ -49,6 +54,71 @@ public class ModularLevelGenerator : MonoBehaviour
         ProcessSection(startInstance, 0);
 
     }
+
+    Vector3 GetRandomPointInBounds(BoxCollider box)
+    {
+        Vector3 center = box.transform.position + box.center;
+        Vector3 size = box.size;
+
+        Vector3 randomOffset = new Vector3(
+            Random.Range(-size.x / 2f, size.x / 2f),
+            0,
+            Random.Range(-size.z / 2f, size.z / 2f)
+        );
+
+        return center + box.transform.rotation * randomOffset;
+    }
+
+    void SpawnEnemiesInRoom(GameObject room)
+    {
+        if (enemyPrefabs.Count == 0) return;
+
+        var spawnZones = room.GetComponentsInChildren<BoxCollider>()
+            .Where(c => c.isTrigger && c.gameObject.name.Contains("EnemySpawnZone"))
+            .ToList();
+
+        if (spawnZones.Count == 0) return;
+
+        if (random.Next(100) > enemySpawnChance) return;
+
+        int enemyCount = random.Next(enemiesPerRoom.x, enemiesPerRoom.y + 1);
+
+        List<Vector3> usedPositions = new List<Vector3>();
+        float minDistance = 1.0f; // минимальное расстояние между врагами
+
+        int attemptsPerEnemy = 10;
+
+        for (int i = 0; i < enemyCount; i++)
+        {
+            Vector3 spawnPosition = Vector3.zero;
+            bool validPositionFound = false;
+
+            for (int attempt = 0; attempt < attemptsPerEnemy; attempt++)
+            {
+                var zone = spawnZones[random.Next(spawnZones.Count)];
+                spawnPosition = GetRandomPointInBounds(zone);
+
+                bool tooClose = usedPositions.Any(pos => Vector3.Distance(pos, spawnPosition) < minDistance);
+
+                if (!tooClose)
+                {
+                    validPositionFound = true;
+                    break;
+                }
+            }
+
+            if (!validPositionFound)
+            {
+                Debug.LogWarning("Не удалось найти свободное место для врага после нескольких попыток.");
+                continue;
+            }
+
+            usedPositions.Add(spawnPosition);
+            GameObject enemyPrefab = enemyPrefabs[random.Next(enemyPrefabs.Count)];
+            Instantiate(enemyPrefab, spawnPosition, Quaternion.identity, room.transform);
+        }
+    }
+
 
     void ProcessSection(SectionInstance section, int branchOrder)
     {
@@ -95,6 +165,7 @@ public class ModularLevelGenerator : MonoBehaviour
             }
 
             spawnedSections.Add(sectionInstance);
+            SpawnEnemiesInRoom(newRoomGO);
             ProcessSection(sectionInstance, branchOrder + 1);
         }
     }
@@ -152,6 +223,7 @@ public class ModularLevelGenerator : MonoBehaviour
         Debug.Log("Spawned section: " + prefab.prefab.name + " at " + position);
 
         spawnedSections.Add(sectionInstance);
+        SpawnEnemiesInRoom(instance);
         return sectionInstance;
 
 
@@ -163,6 +235,9 @@ public class ModularLevelGenerator : MonoBehaviour
 
         var endPrefab = endCapPrefabs[random.Next(endCapPrefabs.Count)];
         var endInstance = Instantiate(endPrefab, exit.transform.position, exit.transform.rotation, sectionsContainer);
+        endInstance.transform.localPosition = exit.transform.position;
+        endInstance.transform.localRotation = exit.transform.rotation;
+
         exit.connectedSection = null;
     }
 
