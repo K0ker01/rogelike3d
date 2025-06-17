@@ -506,6 +506,20 @@ MonoBehaviour:
     - corridor
     deadEndChance: 50
     isRoom: 1
+  - prefab: {fileID: 5483729725120515693, guid: f945dac2e0bbcc546978451a0fbdb259, type: 3}
+    tags:
+    - room
+    createsTags:
+    - corridor
+    deadEndChance: 50
+    isRoom: 1
+  - prefab: {fileID: 5483729725120515693, guid: f58090f627c6b37498b323ac1b459c16, type: 3}
+    tags:
+    - room
+    createsTags:
+    - corridor
+    deadEndChance: 50
+    isRoom: 1
   endCapPrefabs:
   - {fileID: 5721723476799238222, guid: 4adae8232505e0e45b64cc3b61e9d9e1, type: 3}
   specialRules: []
@@ -513,6 +527,10 @@ MonoBehaviour:
   - corridor
   - start
   - room
+  enemyPrefabs:
+  - {fileID: 1005778563}
+  enemySpawnChance: 100
+  enemiesPerRoom: {x: 1, y: 3}
 --- !u!1 &501059115
 GameObject:
   m_ObjectHideFlags: 0
