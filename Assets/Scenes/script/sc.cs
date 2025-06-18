@@ -5,7 +5,7 @@ using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
     [Header("Target Settings")]
-    public Transform target; // Игрок
+    public Transform target; 
     public float detectionRange = 10f;
     public float attackRange = 2f;
 

@@ -11,7 +11,6 @@ public class HealthBar_UI : MonoBehaviour
 
     private void Start()
     {
-        // Автопоиск HealthSystem если не назначен
         if (healthSystem == null)
             healthSystem = GetComponentInParent<HealthSystem>();
 
@@ -21,10 +20,8 @@ public class HealthBar_UI : MonoBehaviour
             return;
         }
 
-        // Подписываемся на изменение здоровья
         healthSystem.OnHealthChanged += UpdateHealthBar;
 
-        // Инициализируем с текущими значениями
         UpdateHealthBar(healthSystem.CurrentHealth);
     }
 
@@ -42,10 +39,9 @@ public class HealthBar_UI : MonoBehaviour
         if (healthText != null)
             healthText.text = $"{currentHealth}/{healthSystem.MaxHealth}";
 
-        // Дополнительно: визуальный эффект при низком здоровье
         if (fillAmount < 0.3f)
             healthBarFill.color = Color.red;
-        else
-            healthBarFill.color = Color.green;
+        else { }
+  
     }
 }

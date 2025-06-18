@@ -72,8 +72,6 @@ public class PlayerMachine : SuperStateMachine
         return local.normalized;
     }
 
-    // -------- STATES --------
-
     void Idle_EnterState()
     {
         controller.EnableSlopeLimit();
