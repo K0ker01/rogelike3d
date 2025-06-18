@@ -167,9 +167,7 @@ public class ModularLevelGenerator : MonoBehaviour
             spawnedSections.Add(sectionInstance);
             SpawnEnemiesInRoom(newRoomGO);
             ProcessSection(sectionInstance, branchOrder + 1);
-            CloseUnusedExits(section);
-
-            Debug.Log("Processing section: " + section.instance.name + ", exits: " + section.exits.Count);
+           
         }
     }
 
@@ -238,6 +236,8 @@ public class ModularLevelGenerator : MonoBehaviour
 
         var endPrefab = endCapPrefabs[random.Next(endCapPrefabs.Count)];
         var endInstance = Instantiate(endPrefab, exit.transform.position, exit.transform.rotation, sectionsContainer);
+        endInstance.transform.localPosition = exit.transform.position;
+        endInstance.transform.localRotation = exit.transform.rotation;
         exit.connectedSection = null;
     }
 
@@ -262,16 +262,7 @@ public class ModularLevelGenerator : MonoBehaviour
         spawnedSections.Clear();
     }
 
-    void CloseUnusedExits(SectionInstance section)
-    {
-        foreach (var exit in section.exits)
-        {
-            if (exit.connectedSection == null)
-            {
-                SpawnEndCap(exit);
-            }
-        }
-    }
+   
 
 
     public class SectionInstance
